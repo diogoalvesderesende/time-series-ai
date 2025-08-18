@@ -267,20 +267,15 @@ if "vector_store_id" not in st.session_state:
 
 # Load vector store metadata
 def load_vector_store():
-    """Load the vector store ID from the JSON file."""
+    """Load vector store ID from Streamlit secrets"""
     try:
-        current_dir = Path(__file__).parent
-        vector_store_path = current_dir / "_vector_store.json"
-        
-        if vector_store_path.exists():
-            with open(vector_store_path, 'r') as f:
-                vs_meta = json.load(f)
-            return vs_meta.get("id")
-        else:
-            st.error("❌ Vector store file not found. Please ensure _vector_store.json exists.")
+        vector_store_id = st.secrets.get("VECTOR_STORE_ID")
+        if not vector_store_id:
+            st.error("❌ Vector store ID not found in secrets. Please check your .streamlit/secrets.toml file.")
             return None
+        return vector_store_id
     except Exception as e:
-        st.error(f"❌ Error loading vector store: {e}")
+        st.error(f"❌ Error loading vector store ID: {str(e)}")
         return None
 
 # Get API key from .env file

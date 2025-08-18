@@ -84,6 +84,20 @@ streamlit run streamlit_app.py
 - **API Key** - Add to `.env` file
 - **Vector Store** - Your course content should be indexed (you already have this!)
 
+## 🔐 Secrets Configuration
+
+The app uses Streamlit secrets for secure configuration. Create `.streamlit/secrets.toml`:
+
+```toml
+# OpenAI API Key
+OPENAI_API_KEY = "your-api-key-here"
+
+# Vector Store ID
+VECTOR_STORE_ID = "vs_689b5d0712108191a132efe2deff75f4"
+```
+
+**Note**: The vector store ID is now managed through secrets instead of the `_vector_store.json` file.
+
 ## 📚 What You Can Ask
 
 The assistant covers the entire time series curriculum:
@@ -116,7 +130,7 @@ time-series-course-assistant/
 ├── install.sh               # Unix installer
 ├── run_app.bat              # Windows launcher
 ├── run_app.sh               # Unix launcher
-├── _vector_store.json       # Your course content index
+├── .streamlit/secrets.toml  # Configuration secrets (API keys, vector store ID)
 └── README.md                # This file
 ```
 
@@ -131,7 +145,7 @@ time-series-course-assistant/
 ### Common Issues
 
 **"Vector store not available"**
-- Ensure `_vector_store.json` exists and contains valid JSON
+- Ensure `.streamlit/secrets.toml` contains your `VECTOR_STORE_ID` and `OPENAI_API_KEY`
 - Check file permissions
 
 **"API key not found in .env file"**

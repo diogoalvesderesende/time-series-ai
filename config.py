@@ -10,7 +10,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 
 # Vector store configuration
-VECTOR_STORE_PATH = BASE_DIR / "_vector_store.json"
+# Vector store ID is loaded from Streamlit secrets
+VECTOR_STORE_ID = None  # Will be loaded from secrets
 
 # API Configuration
 DEFAULT_MODEL = "gpt-5-nano"
