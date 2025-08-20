@@ -525,8 +525,8 @@ def main():
         st.header("⚙️ Settings")
         
         # LangSmith tracing status indicator
-        if LANGSMITH_AVAILABLE and is_langsmith_configured():
-            st.success("🔍 AI Assistant is here for you", icon="✅") 
+        # if LANGSMITH_AVAILABLE and is_langsmith_configured():
+        #     st.success("🔍 AI Assistant is here for you", icon="✅") 
 
         # Reset button
         if st.button("🔄 Reset Conversation", type="secondary"):
@@ -535,24 +535,37 @@ def main():
         # Feedback section
         st.markdown("---")
         st.markdown("### 💬 Share Your Thoughts")
-        st.markdown("Help me improve! Share your feedback and suggestions.")
+        st.markdown("Help me improve!")
         
-        # Feedback button with Typeform link
-        if st.button("📝 Give Feedback", type="secondary"):
-            st.markdown("""
-            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f8f9fa, #FFFFFF); border: 2px solid #E0E0E0; border-radius: 10px; margin: 1rem 0;">
-                <p style="margin: 0 0 1rem 0; color: #0074FF; font-weight: 600;">🎉 Thanks for wanting to help!</p>
-                <p style="margin: 0 0 1rem 0; color: #555555; font-size: 0.9rem;">Click the link below to share your thoughts:</p>
-                <a href="https://6yoersztgja.typeform.com/to/T1zlLvoZ" target="_blank" style="display: inline-block; background: #0074FF; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">📋 Open Feedback Form</a>
-                <p style="margin: 1rem 0 0 0; color: #666666; font-size: 0.8rem;">Your feedback helps make this assistant even better! 🚀</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # Feedback button - direct link to Typeform
+        st.markdown(f"""
+        <a href="https://6yoersztgja.typeform.com/to/T1zlLvoZ" target="_blank" style="text-decoration: none;">
+            <button style="width: 100%; background-color: #0074FF; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                📝 Give Feedback
+            </button>
+        </a>
+        """, unsafe_allow_html=True)
+
+        # Course link
+        st.markdown("---")
+        st.markdown("### 📚 Access the Course")
+        st.markdown("Ready to dive deeper?")
+        
+        # Course button - direct link
+        st.markdown(f"""
+        <a href="https://www.udemy.com/course/forecasting-python/?referralCode=63045C9CC807EB1EBD9A" target="_blank" style="text-decoration: none;">
+            <button style="width: 100%; background-color: #0074FF; color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                🚀 Go to Course
+            </button>
+        </a>
+        """, unsafe_allow_html=True)
         
         st.markdown("---")
-        
+
         # Support section
         st.markdown("### 💝 Support This App")
         st.markdown("Help keep this Time Series Course Assistant free and running!")
+        
         
         # Buy Me a Coffee button
         button(
