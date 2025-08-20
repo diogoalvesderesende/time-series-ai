@@ -267,12 +267,22 @@ if "vector_store_id" not in st.session_state:
 
 # Load vector store metadata
 def load_vector_store():
-    """Load vector store ID from Streamlit secrets"""
+    """Load vector store ID from .env file first, then fall back to Streamlit secrets"""
     try:
-        vector_store_id = st.secrets.get("VECTOR_STORE_ID")
+        # First try to load from .env file (for local development)
+        vector_store_id = os.getenv("VECTOR_STORE_ID")
+        
         if not vector_store_id:
-            st.error("❌ Vector store ID not found in secrets. Please check your .streamlit/secrets.toml file.")
+            # Fall back to Streamlit secrets (for production deployment)
+            try:
+                vector_store_id = st.secrets.get("VECTOR_STORE_ID")
+            except Exception:
+                pass
+        
+        if not vector_store_id:
+            st.error("❌ Vector store ID not found. Please check your .env file or .streamlit/secrets.toml file.")
             return None
+            
         return vector_store_id
     except Exception as e:
         st.error(f"❌ Error loading vector store ID: {str(e)}")
@@ -389,6 +399,7 @@ What to prioritize per topic
 
 If the user references a lecture/section by name/number, search for files whose names contain that stem and focus your answer there.
 NEVER use specific lecture numbers or titles in your answers as they change.
+If you don't have the answer, or the user is talking about something that is not in the course, say so.
 """
 
 INITIAL_ASSISTANT_MESSAGE = """
@@ -478,6 +489,22 @@ def main():
         # Reset button
         if st.button("🔄 Reset Conversation", type="secondary"):
             reset_conversation()
+        
+        # Feedback section
+        st.markdown("---")
+        st.markdown("### 💬 Share Your Thoughts")
+        st.markdown("Help me improve! Share your feedback and suggestions.")
+        
+        # Feedback button with Typeform link
+        if st.button("📝 Give Feedback", type="secondary", use_container_width=True):
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f8f9fa, #FFFFFF); border: 2px solid #E0E0E0; border-radius: 10px; margin: 1rem 0;">
+                <p style="margin: 0 0 1rem 0; color: #0074FF; font-weight: 600;">🎉 Thanks for wanting to help!</p>
+                <p style="margin: 0 0 1rem 0; color: #555555; font-size: 0.9rem;">Click the link below to share your thoughts:</p>
+                <a href="https://6yoersztgja.typeform.com/to/T1zlLvoZ" target="_blank" style="display: inline-block; background: #0074FF; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;">📋 Open Feedback Form</a>
+                <p style="margin: 1rem 0 0 0; color: #666666; font-size: 0.8rem;">Your feedback helps make this assistant even better! 🚀</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         st.markdown("---")
         
