@@ -83,6 +83,7 @@ streamlit run streamlit_app.py
 - **Python 3.8+**
 - **API Key** - Add to `.env` file
 - **Vector Store** - Your course content should be indexed (you already have this!)
+- **LangSmith API Key** - For tracing and observability (optional but recommended)
 
 ## 🔐 Secrets Configuration
 
@@ -97,6 +98,25 @@ VECTOR_STORE_ID = "vs_689b5d0712108191a132efe2deff75f4"
 ```
 
 **Note**: The vector store ID is now managed through secrets instead of the `_vector_store.json` file.
+
+## 🔍 **LangSmith Tracing Setup (Optional)**
+
+For production monitoring and debugging, you can enable LangSmith tracing:
+
+1. **Get LangSmith API Key**: Sign up at [LangSmith](https://smith.langchain.com/)
+2. **Configure Environment**: Add to your `.env` file:
+   ```bash
+   LANGSMITH_TRACING=true
+   LANGSMITH_API_KEY=your-api-key-here
+   LANGSMITH_PROJECT=time-series-course-assistant
+   ```
+3. **Monitor**: View traces, performance metrics, and debug AI interactions in the LangSmith dashboard
+
+**Benefits**:
+- 🚀 **Performance Monitoring**: Track response times and API usage
+- 🐛 **Debug AI Interactions**: See exactly what was sent to OpenAI
+- 📊 **Usage Analytics**: Monitor user interactions and model performance
+- 🔍 **Error Tracking**: Identify and fix issues quickly
 
 ## 📚 What You Can Ask
 

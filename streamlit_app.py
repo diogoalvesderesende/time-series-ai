@@ -15,14 +15,41 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from streamlit_extras.buy_me_a_coffee import button
 
+# LangSmith tracing
+try:
+    from langsmith.wrappers import wrap_openai
+    from langsmith import traceable
+    LANGSMITH_AVAILABLE = True
+except ImportError:
+    LANGSMITH_AVAILABLE = False
+    print("⚠️ LangSmith not available - install langsmith for tracing")
+
+# Import our tracing config
+try:
+    from tracing_config import get_langsmith_config, is_langsmith_configured
+    CONFIG_AVAILABLE = True
+except ImportError:
+    CONFIG_AVAILABLE = False
+    print("⚠️ Tracing config not available")
+
 # Load environment variables from .env file
 load_dotenv(override=True)
 
 # Debug: Check what API key is loaded
 api_key = os.getenv("OPENAI_API_KEY")
 
-# Configure OpenAI client
-client = OpenAI(api_key=api_key)
+# Configure OpenAI client with LangSmith tracing
+if LANGSMITH_AVAILABLE and is_langsmith_configured():
+    # Wrap the client for automatic tracing
+    client = wrap_openai(OpenAI(api_key=api_key))
+    print("✅ LangSmith tracing enabled for OpenAI client")
+else:
+    # Use regular client without tracing
+    client = OpenAI(api_key=api_key)
+    if LANGSMITH_AVAILABLE:
+        print("⚠️ LangSmith available but not configured - check environment variables")
+    else:
+        print("ℹ️ LangSmith not available - using regular OpenAI client")
 
 # Page configuration
 st.set_page_config(
@@ -409,6 +436,7 @@ Try: "ARIMA vs SARIMA—when to use each?", "Show the LSTM code we used", or "Wh
 """
 
 # OpenAI client setup
+@traceable if LANGSMITH_AVAILABLE else lambda x: x
 def ask_bot(user_question: str, verbosity: str = "low"):
     common_kwargs = {
         "model": "gpt-5-nano",
@@ -446,6 +474,16 @@ def reset_conversation():
 
 # Main app
 def main():
+    # Add LangSmith tracing for app startup
+    if LANGSMITH_AVAILABLE and is_langsmith_configured():
+        print("🚀 App started - LangSmith tracing active")
+        config = get_langsmith_config()
+        print(f"📊 Project: {config['project']}, Environment: {config['environment']}")
+    elif LANGSMITH_AVAILABLE:
+        print("🚀 App started - LangSmith available but not configured")
+    else:
+        print("🚀 App started - LangSmith not available")
+    
     # Header
     st.markdown('<h1 class="main-header">🚀 Time Series Course Assistant</h1>', unsafe_allow_html=True)
     st.markdown('<p class="tagline">Your AI sidekick Cyber Diogo - because every data scientist needs a trusty companion! 🤖🦸‍♂️</p>', unsafe_allow_html=True)
@@ -486,6 +524,10 @@ def main():
     with st.sidebar:
         st.header("⚙️ Settings")
         
+        # LangSmith tracing status indicator
+        if LANGSMITH_AVAILABLE and is_langsmith_configured():
+            st.success("🔍 AI Assistant is here for you", icon="✅") 
+
         # Reset button
         if st.button("🔄 Reset Conversation", type="secondary"):
             reset_conversation()
@@ -496,7 +538,7 @@ def main():
         st.markdown("Help me improve! Share your feedback and suggestions.")
         
         # Feedback button with Typeform link
-        if st.button("📝 Give Feedback", type="secondary", use_container_width=True):
+        if st.button("📝 Give Feedback", type="secondary"):
             st.markdown("""
             <div style="text-align: center; padding: 1rem; background: linear-gradient(135deg, #f8f9fa, #FFFFFF); border: 2px solid #E0E0E0; border-radius: 10px; margin: 1rem 0;">
                 <p style="margin: 0 0 1rem 0; color: #0074FF; font-weight: 600;">🎉 Thanks for wanting to help!</p>

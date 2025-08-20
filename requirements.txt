@@ -11,3 +11,6 @@ openai>=1.99.8
 
 # Streamlit extras for additional components
 streamlit-extras>=0.3.0
+
+# Observability and tracing
+langsmith>=0.4.14
